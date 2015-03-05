@@ -47,7 +47,7 @@ return function (context, req, res) {
             // Calculate changes
             console.log('WEBHOOK RECEIVED', body);
             if (Array.isArray(body.commits)) {
-                for (var i = body.commits.length - 1; i--; i >= 0) {
+                for (var i = body.commits.length - 1; i >= 0; i--) {
                     var commit = body.commits[i];
                     if (Array.isArray(commit.added))
                         commit.added.forEach(process(modified));
