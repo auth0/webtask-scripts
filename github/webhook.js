@@ -8,23 +8,47 @@ return function (context, req, res) {
     var modified = {};
     var removed = {};
 
-    try {
-        if (typeof context.data.auth0_token !== 'string') {
-            console.log('ERROR: request without auth0_token.');
-            res.writeHead(400);
-            return res.end("Missing auth0_token");
+    var err;
+    ['auth0_client_id', 'auth0_client_secret', 'auth0_account'].forEach(function (i) {
+        if (typeof context.data[i] !== string) {
+            err = i;
         }
-        if (typeof context.data.auth0_account !== 'string') {
-            console.log('ERROR: request without auth0_account.');
+    });
+    if (err) {
+        try {
+            console.log('ERROR: request without ' + err + '.');
             res.writeHead(400);
-            return res.end("Missing auth0_account");
+            return res.end('Missing ' + err);
         }
-    }
-    catch (e) {
-        // ignore
+        catch (e) {
+            // ignore
+        }
     }
 
     async.series([
+        function (callback) {
+            // Get Auth0 access token
+            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/oauth/token';
+            request({
+                url: base_url,
+                method: 'POST',
+                json: true,
+                body: {
+                    client_id: context.data.auth0_client_id,
+                    client_secret: context.data.auth0_client_secret,
+                    grant_type: 'client_credentials'
+                }
+            }, function (error, ares, body) {
+                if (error)
+                    return callback(error);
+                if (ares.statusCode !== 200)
+                    return callback(new Error('Error obtaining access token. HTTP status ' + ares.statusCode));
+                if (!body || typeof body !== 'object' || typeof body.access_token !== 'string')
+                    return callback(new Error('Error obtaining access token. Invalid response body.'));
+                context.data.auth0_token = body.access_token;
+                return callback();
+            });
+        },
         function (callback) {
             // Collect payload of GitHub web hook
             req.on('data', function (chunk) { body += chunk; });
