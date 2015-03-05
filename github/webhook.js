@@ -45,7 +45,6 @@ return function (context, req, res) {
         },
         function (callback) {
             // Calculate changes
-            console.log('WEBHOOK RECEIVED', body);
             if (Array.isArray(body.commits)) {
                 for (var i = body.commits.length - 1; i >= 0; i--) {
                     var commit = body.commits[i];
@@ -75,7 +74,11 @@ return function (context, req, res) {
         },
         function (callback) {
             // Obtain modified rules from GitHub
-            console.log({ modified_rules: modified, removed_rules: removed });
+            console.log({ 
+                account: context.data.auth0_account, 
+                modified_rules: Object.getOwnPropertyNames(modified), 
+                removed_rules: Object.getOwnPropertyNames(removed)
+            });
 
             var base_url = 'https://raw.githubusercontent.com/' 
                 + body.repository.full_name + '/' + (context.data.branch || 'master') +'/rules/';
@@ -101,10 +104,10 @@ return function (context, req, res) {
             // Delete rules removed in GitHub from Auth0
             var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/rules/';
             async.eachSeries(
-                Object.getOwnPropertyNames(modified),
+                Object.getOwnPropertyNames(removed),
                 function (rule, callback) {
                     request({
-                        url: base_url + rule,
+                        url: base_url + rule + '/',
                         method: 'DELETE',
                         headers: {
                             Authorization: 'Bearer ' + context.data.auth0_token
@@ -154,7 +157,11 @@ return function (context, req, res) {
             }
             else {
                 res.writeHead(201);
-                res.end('OK');
+                res.end(JSON.stringify({ 
+                    account: context.data.auth0_account, 
+                    modified_rules: Object.getOwnPropertyNames(modified), 
+                    removed_rules: Object.getOwnPropertyNames(removed)
+                }, null, 2));
             }
         }
         catch (e) {
