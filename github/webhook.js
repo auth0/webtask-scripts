@@ -33,7 +33,7 @@ return function (context, req, res) {
             }
             else {
                 res.writeHead(201);
-                res.end();
+                res.end('OK');
             }
         }
         catch (e) {
