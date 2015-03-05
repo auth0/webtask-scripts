@@ -10,7 +10,7 @@ return function (context, req, res) {
 
     var err;
     ['auth0_client_id', 'auth0_client_secret', 'auth0_account'].forEach(function (i) {
-        if (typeof context.data[i] !== string) {
+        if (typeof context.data[i] !== 'string') {
             err = i;
         }
     });
