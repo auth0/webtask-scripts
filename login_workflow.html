@@ -19,15 +19,138 @@
     </il>
     <p><strong>NOTE</strong> originating app has orange background, webtask workflow has blue background.<p>
 
-    <form method="POST" action="https://sandbox.it.auth0.com/auth0-wf?webtask_no_cache=1&key=eyJhbGciOiJIUzI1NiIsImtpZCI6IjEifQ.eyJqdGkiOiI5YjFjMGNlNjgyZTQ0NzlhODY1ZTE2Y2JlYjdjNzVmZiIsImlhdCI6MTQyNTY3Nzc4MywidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2F1dGgwL3dlYnRhc2stc2NyaXB0cy9tYXN0ZXIvbG9naW4vYXV0aDBfbG9naW4uanMiLCJ0ZW4iOiJhdXRoMC13ZiIsInBjdHgiOnsiYXV0aDBfZG9tYWluIjoiYXV0aDAtd2YuYXV0aDAuY29tIiwiYXV0aDBfY2xpZW50X2lkIjoiZ2RVOG50NVFiZE1BcGM4N2VkN2UxQlRlWTQ2TzdDemMifX0.MvwWuM__Y_z8WRUL4QnSA9foxL__eq2l6Q3ywcwzkmw">
-        <input type="hidden" id="workflow_context" name="workflow_context"/>
+    <form id="auth0-wf" method="POST">
         <input type="submit" value="Start login workflow"/>
     </form>
 
     <script>
-        document.getElementById('workflow_context').value = JSON.stringify({
-            foo: 'bar'
-        });
+        // Webtask Workflow is a state machine. Each state describes:
+        // * url - the webtask to run in that state
+        // * inputs - client-side data to pass to the webtask
+        // * next - a string describing the next state to transition to after the webtask 
+        //   is done, or a function that returns the next state to transition to
+        // * transition - 'manual' or 'auto' (default); whether the invocation of the next 
+        //   webtask state is done automatically or requires user initiatied action
+        //   (e.g. click of a form submit)
+        // The `start` state is the initial state. The `end` state is the final state.
+        // Other state names are application specific. 
+        var workflow = {
+            start: {
+
+                // Login with Google
+
+                url: 'https://sandbox.it.auth0.com/auth0-wf?webtask_no_cache=1&key=eyJhbGciOiJIUzI1NiIsImtpZCI6IjEifQ.eyJqdGkiOiI5YjFjMGNlNjgyZTQ0NzlhODY1ZTE2Y2JlYjdjNzVmZiIsImlhdCI6MTQyNTY3Nzc4MywidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2F1dGgwL3dlYnRhc2stc2NyaXB0cy9tYXN0ZXIvbG9naW4vYXV0aDBfbG9naW4uanMiLCJ0ZW4iOiJhdXRoMC13ZiIsInBjdHgiOnsiYXV0aDBfZG9tYWluIjoiYXV0aDAtd2YuYXV0aDAuY29tIiwiYXV0aDBfY2xpZW50X2lkIjoiZ2RVOG50NVFiZE1BcGM4N2VkN2UxQlRlWTQ2TzdDemMifX0.MvwWuM__Y_z8WRUL4QnSA9foxL__eq2l6Q3ywcwzkmw',
+                inputs: {
+                    strategy: 'google-oauth2'
+                },
+                transition: 'manual',
+                next: 'microsoft'
+            },
+            microsoft: {
+
+                // Login with Microsoft
+
+                url: 'https://sandbox.it.auth0.com/auth0-wf?webtask_no_cache=1&key=eyJhbGciOiJIUzI1NiIsImtpZCI6IjEifQ.eyJqdGkiOiI5YjFjMGNlNjgyZTQ0NzlhODY1ZTE2Y2JlYjdjNzVmZiIsImlhdCI6MTQyNTY3Nzc4MywidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2F1dGgwL3dlYnRhc2stc2NyaXB0cy9tYXN0ZXIvbG9naW4vYXV0aDBfbG9naW4uanMiLCJ0ZW4iOiJhdXRoMC13ZiIsInBjdHgiOnsiYXV0aDBfZG9tYWluIjoiYXV0aDAtd2YuYXV0aDAuY29tIiwiYXV0aDBfY2xpZW50X2lkIjoiZ2RVOG50NVFiZE1BcGM4N2VkN2UxQlRlWTQ2TzdDemMifX0.MvwWuM__Y_z8WRUL4QnSA9foxL__eq2l6Q3ywcwzkmw',
+                inputs: {
+                    strategy: 'windowslive'
+                },
+                next: 'end'
+            }
+        }
+
+        // Resume workflow 
+        if (!resume_workflow(workflow)) {
+            // Workflow completed, do something smart with the results
+        }
+
+        // Workflow orchestration engine would ship as a client side library. 
+        // Right now it is implemented in place below.
+
+        function resume_workflow(options) {
+            if (!options || typeof options !== 'object')
+                throw new Error('options parameter must be specified.')
+            if (!options.workflow || typeof options.workflow !== 'object')
+                throw new Error('options.workflow parameter must be specified.')
+
+            // Determine current workflow state
+            options.workflow_key = options.workflow_key || 'auth0.wf';
+            var state = localStorage.getItem(options.workflow_key);
+
+            // Determine state transition
+            try {
+                var nextState;
+                if (state === null || state === undefined) {
+                    nextState = 'start';
+                }
+                else if (!workflow[state]) {
+                    throw new Error("Workflow does not define state `" + state + "`. Cleaning up local storage.");
+                }
+                else if (typeof workflow[state].next === 'undefined' || workflow[state].next === 'end') {
+                    nextState = null;
+                }
+                else if (typeof workflow[state].next === 'string') {
+                    nextState = workflow[state].next;
+                }
+                else if (typeof workflow[state].next === 'function') {
+                    nextState = workflow[state].next(options);
+                }
+                else {
+                    throw new Error("The `next` property of state `" + state + "` must be a string or a function returning a string.");
+                }
+
+                if (nextState === null) {
+                    // Workflow completed
+                    localStorage.removeItem(options.workflow_key);
+                    return false;
+                }
+                else if (!workflow[nextState] || typeof workflow[nextState] !== 'object') {
+                    throw new Error("Workflow does not define state `" + nextState + "`, unable to transition.");
+                }
+                else if (typeof workflow[nextState].url !== 'string') {
+                    throw new Error("Workflow state `" + nextState + "` does not define `url` property, unable to transition.");
+                }
+                else {
+                    // Set up the form for a POST that will initiate the next webtask to run
+                    options.form_id = options.form_id || 'auth0-wf';
+                    var form = document.forms[options.form_id];
+                    if (!form) {
+                        throw new Error("The page does not contain form with id `" + options.form_id = "`. Unable to set up workflow state transition.");
+                    }
+                    form.method = 'POST';
+                    form.action = workflow[nextState].url;
+                    addHidden(form, 'callback', workflow[nextState].callback || window.location.href);
+                    if (workflow[nextState].inputs && typeof workflow[nextState].inputs === 'object') {
+                        for (var i in workflow[nextState].inputs) {
+                            addHidden(form, i, workflow[nextState].inputs[i]);
+                        }
+                    }
+                    if (workflow[nextState].transition === 'auto' || workflow[nextState].transition === undefined) {
+                        // Automatically submit the form
+                        form.submit();
+                    }
+                    else if (workflow[nextState].transition !== 'manual') {
+                        throw new Error("Workflow state `" + nextState + "` has an unsupported value of the `transition` property. Only `manual` or `auto` are supported.");
+                    }
+                    else {
+                        // Set the next state but do not transition automatically
+                        localStorage.setItem(options.workflow_key, nextState);
+                    }
+                    return true;
+                }
+            }
+            finally {
+                // Reset wokflow state since we are likely in unsupported state anyway
+                localStorage.removeItem(options.workflow_key);
+            }
+
+            function addHidden(form, key, value) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                form.appendChild(input);
+            }
+        }
     </script>
 </body>
 </html>
