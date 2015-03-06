@@ -26,20 +26,22 @@ return function (context, req, res) {
         },
         function (callback) {
             // Create model and view
+            console.log('CONTEXT', context);
             var html = require('ejs').render(view.stringify(), context);
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.end(html);
+            return callback();
         }
     ], function (error) {
-        try {
-            if (error) {
+        if (error) {
+            try {            
                 console.log('ERROR', error);
                 res.writeHead(500);
                 res.end(error.stack || error.message || error.toString());
             }
-        }
-        catch (e) {
-            // ignore
+            catch (e) {
+                // ignore
+            }
         }
     });
 };
