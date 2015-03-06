@@ -59,18 +59,20 @@
         }
 
         // Resume workflow 
-        if (!resume_workflow(workflow)) {
+        if (!resume_workflow(workflow) {
             // Workflow completed, do something smart with the results
         }
 
         // Workflow orchestration engine would ship as a client side library. 
         // Right now it is implemented in place below.
 
-        function resume_workflow(options) {
-            if (!options || typeof options !== 'object')
-                throw new Error('options parameter must be specified.')
-            if (!options.workflow || typeof options.workflow !== 'object')
+        function resume_workflow(workflow, options) {
+            if (!workflow || typeof workflow !== 'object')
                 throw new Error('options.workflow parameter must be specified.')
+            if (options && typeof options !== 'object')
+                throw new Error('options parameter must be an object.')
+
+            options = options || {};
 
             // Determine current workflow state
             options.workflow_key = options.workflow_key || 'auth0.wf';
