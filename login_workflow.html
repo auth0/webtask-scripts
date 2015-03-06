@@ -114,7 +114,7 @@
                     options.form_id = options.form_id || 'auth0-wf';
                     var form = document.forms[options.form_id];
                     if (!form) {
-                        throw new Error("The page does not contain form with id `" + options.form_id = "`. Unable to set up workflow state transition.");
+                        throw new Error("The page does not contain form with id `" + options.form_id + "`. Unable to set up workflow state transition.");
                     }
                     form.method = 'POST';
                     form.action = workflow[nextState].url;
