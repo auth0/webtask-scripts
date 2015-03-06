@@ -14,7 +14,7 @@ return function (context, req, res) {
             req.on('end', function () {
                 try {
                     context.payload = querystring.parse(body);
-                    if (!body || typeof body !== 'object')
+                    if (!context.payload || typeof context.payload !== 'object')
                         throw error(400, "Unexpected payload.");
                 }
                 catch (e) {
