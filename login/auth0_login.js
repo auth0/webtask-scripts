@@ -13,9 +13,12 @@ return function (context, req, res) {
             req.on('data', function (chunk) { body += chunk; });
             req.on('end', function () {
                 try {
-                    context.payload = querystring.parse(body);
-                    if (!context.payload || typeof context.payload !== 'object')
+                    body = querystring.parse(body);
+                    if (!body || typeof body !== 'object')
                         throw error(400, "Unexpected payload.");
+                    for (var i in body)
+                        if (context.data[i] === undefined)
+                            context.data[i] = body[i];
                 }
                 catch (e) {
                     return callback(e);
@@ -55,15 +58,41 @@ function error(code, message) {
 function view() {/*
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Login</title>
-<style>
-    body { 
-        background: #44C7F4;
-    }
-</style>
+    <style>
+        body { 
+            background: #44C7F4;
+        }
+    </style>
+    <script src="//cdn.auth0.com/js/lock-7.1.min.js"></script>
 <head>
 <body>
-    <h1>Webtask!</h1>
+    <p>This is an instance of Auth0 Login webtask</p>
+    <script>
+        var lock;
+        document.addEventListener('DOMContentLoaded', function() {
+            lock = new Auth0Lock('<%- data.auth0_client_id %>', '<%- data.auth0_domain %>');
+            lock.show({ 
+                popup: true,
+                connections: ['<%- data.strategy %>']
+                <% if (data.title) { %>
+                , dict: {
+                    title: '<%= data.title %>'
+                }
+                <% }; %>
+            }, function(error, profile, token) {
+                var hash;
+                if (error) {
+                    hash = '#error=' + encodeURIComponent(error.message || error.toString());
+                }
+                else {
+                    hash = '#token=' + encodeURIComponent(token);
+                }
+                window.location.replace('<%- data.callback %>' + hash);
+            });
+        });
+    </script>
 </body>
 </html>
 */}
