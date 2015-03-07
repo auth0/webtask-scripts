@@ -68,31 +68,33 @@ function view() {/*
     <script src="//cdn.auth0.com/js/lock-7.1.min.js"></script>
 <head>
 <body>
-    <p>This is an instance of Auth0 Login webtask</p>
+    <h1>Unnecessary 3s delay to show we are in webtask...</h1>
     <script>
         var lock;
         document.addEventListener('DOMContentLoaded', function() {
             lock = new Auth0Lock('<%- data.auth0_client_id %>', '<%- data.auth0_domain %>');
-            lock.show({ 
-                popup: true,
-                connections: ['<%- data.strategy %>']
-                <% if (data.title) { %>
-                , dict: {
-                    signin: {
-                        title: '<%= data.title %>'
+            setTimeout(function () {
+                lock.show({ 
+                    popup: true,
+                    connections: ['<%- data.strategy %>']
+                    <% if (data.title) { %>
+                    , dict: {
+                        signin: {
+                            title: '<%= data.title %>'
+                        }
                     }
-                }
-                <% }; %>
-            }, function(error, profile, token) {
-                var hash = '#state=<%= data.state %>&';
-                if (error) {
-                    hash += 'error=' + encodeURIComponent(error.message || error.toString());
-                }
-                else {
-                    hash += 'token=' + encodeURIComponent(token);
-                }
-                window.location.replace('<%- data.callback %>' + hash);
-            });
+                    <% }; %>
+                }, function(error, profile, token) {
+                    var hash = '#state=<%= data.state %>&';
+                    if (error) {
+                        hash += 'error=' + encodeURIComponent(error.message || error.toString());
+                    }
+                    else {
+                        hash += 'token=' + encodeURIComponent(token);
+                    }
+                    window.location.replace('<%- data.callback %>' + hash);
+                });
+            }, 3000);
         });
     </script>
 </body>
