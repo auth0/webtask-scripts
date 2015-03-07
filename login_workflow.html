@@ -32,10 +32,11 @@
         // * transition - 'manual' or 'auto' (default); whether the invocation of the next 
         //   webtask state is done automatically or requires app/user initiatied action
         //   (e.g. click of a form submit or programmatic submit)
-        // The `start` state is the initial state. The `end` state is the final state.
+        // The `start` state is the default initial state unless overriden in a call to 
+        // resume_workflow. The `end` state is the final state.
         // Other state names are application specific. 
         var workflow = {
-            start: {
+            google: {
 
                 // Login with Google
 
@@ -60,12 +61,23 @@
         }
 
         // Resume workflow 
-        if (!resume_workflow(workflow)) {
+        if (!resume_workflow(workflow, { intitial_state: 'google' })) {
             // Workflow completed, do something smart with the results
+            alert('Workflow completed. Here are results: ' 
+                + JSON.stringify(get_workflow_state(), null, 2);
         }
 
         // Workflow orchestration engine would ship as a client side library. 
         // Right now it is implemented in place below.
+
+        function get_workflow_state(storage_key) {
+            storage_key = storage_key || 'auth0_result';
+            var result = localStorage.getItem(storage_key);
+            if (result)
+                return JSON.parse(result);
+            else
+                return {};
+        }
 
         function resume_workflow(workflow, options) {
             if (!workflow || typeof workflow !== 'object')
@@ -74,15 +86,34 @@
                 throw new Error('options parameter must be an object.')
 
             options = options || {};
+            options.storage_key = options.storage_key || 'auth0_result';
+            options.intitial_state = options.intitial_state || 'start';
 
             // Determine current workflow state
             var hash = getHashParams();
             var state = hash.state;
+            delete hash.state;
+
+            // Update workflow results in local storage
+            var auth0_result;
+            if (state !== null && state !== undefined) {
+                
+                auth0_result = localStorage.getItem(options.storage_key);
+                if (auth0_result)
+                    auth0_result = JSON.parse(auth0_result);
+                auth0_result[state] = hash;
+            }
+            else {
+                auth0_result = {};
+            }
+            localStorage.setItem(options.storage_key, JSON.stringify(auth0_result));
+
+            // store workflow data in local storage
 
             // Determine state transition
             var nextState;
             if (state === null || state === undefined) {
-                nextState = 'start';
+                nextState = options.intitial_state;
             }
             else if (!workflow[state]) {
                 throw new Error("Workflow does not define state `" + state + "`.");
