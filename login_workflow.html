@@ -160,7 +160,7 @@
                 addHidden(form, 'callback', workflow[nextState].callback || 
                     (window.location.origin 
                         + window.location.pathname 
-                        + window.location.search);
+                        + window.location.search));
                 addHidden(form, 'state', nextState);
                 if (workflow[nextState].inputs && typeof workflow[nextState].inputs === 'object') {
                     for (var i in workflow[nextState].inputs) {
