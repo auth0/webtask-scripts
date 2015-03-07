@@ -164,6 +164,10 @@
                 else if (workflow[nextState].transition !== 'manual') {
                     throw new Error("Workflow state `" + nextState + "` has an unsupported value of the `transition` property. Only `manual` or `auto` are supported.");
                 }
+                else {
+                    // Manual state transition, show UI
+                    document.body.removeAttribute('hidden');
+                }
                 return true;
             }
 
