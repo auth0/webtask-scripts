@@ -82,12 +82,12 @@ function view() {/*
                 }
                 <% }; %>
             }, function(error, profile, token) {
-                var hash;
+                var hash = '#state=<%= data.state %>&';
                 if (error) {
-                    hash = '#error=' + encodeURIComponent(error.message || error.toString());
+                    hash += 'error=' + encodeURIComponent(error.message || error.toString());
                 }
                 else {
-                    hash = '#token=' + encodeURIComponent(token);
+                    hash += 'token=' + encodeURIComponent(token);
                 }
                 window.location.replace('<%- data.callback %>' + hash);
             });
