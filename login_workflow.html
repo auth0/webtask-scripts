@@ -157,7 +157,10 @@
                 }
                 form.method = 'POST';
                 form.action = workflow[nextState].url;
-                addHidden(form, 'callback', workflow[nextState].callback || window.location.href);
+                addHidden(form, 'callback', workflow[nextState].callback || 
+                    (window.location.origin 
+                        + window.location.pathname 
+                        + window.location.search);
                 addHidden(form, 'state', nextState);
                 if (workflow[nextState].inputs && typeof workflow[nextState].inputs === 'object') {
                     for (var i in workflow[nextState].inputs) {
