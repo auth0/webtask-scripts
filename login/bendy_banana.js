@@ -71,7 +71,7 @@ function view() {/*
     <p>EU laws require us to ask for your acceptance of the provisions of 
     <a href="http://en.wikipedia.org/wiki/Commission_Regulation_%28EC%29_No_2257/94" target="_system">Bendy Banana Law</a> 
     before we can proceed.</p>
-    <a href="<%- data.callback %>#state=<%- data.state %>&bendy_banana_acceptance=yes">I accept</a> 
+    <a href="<%- data.callback %>#state=<%- data.state %>&bendy_banana_acceptance=yes">I accept</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="<%- data.callback %>#state=<%- data.state %>&bendy_banana_acceptance=no">I decline</a>
 </body>
 </html>
