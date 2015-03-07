@@ -67,7 +67,7 @@ function view() {/*
     </style>
     <script src="//cdn.auth0.com/js/lock-7.1.min.js"></script>
 <head>
-<body hidden>
+<body>
     <h1>Unnecessary 3s delay to show we are in webtask...</h1>
     <script>
         var lock;
