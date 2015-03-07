@@ -2,26 +2,23 @@
 <head>
     <title>Login Workflow</title>
     <style>
-        #content { 
-            width: 100%;
-            height: 100%;
+        body { 
             background: #EB5424;
         }
     </style>
 </head>
-<body>
-    <div id="content" hidden>
-        <h1>Web Task Samples: Login Workflow</h1>
-        <p>Executing 3 step login workflow using web tasks:</p>
-        <il>
-            <li>[app] Start workflow from originating app</a>
-            <li>[webtasks] Login with Google</li>
-            <li>[webtasks] Then login with Microsoft</li>
-            <li>[webtasks] Then accept privacy policy</li>
-            <li>[app] Then return to originating app</li>
-        </il>
-        <p><strong>NOTE</strong> originating app has orange background, webtask workflow has blue background.<p>
-    </div>
+<body hidden>
+    <h1>Web Task Samples: Login Workflow</h1>
+    <p>Executing 3 step login workflow using web tasks:</p>
+    <il>
+        <li>[app] Start workflow from originating app</a>
+        <li>[webtasks] Login with Google</li>
+        <li>[webtasks] Then login with Microsoft</li>
+        <li>[webtasks] Then accept privacy policy</li>
+        <li>[app] Then return to originating app</li>
+    </il>
+    <p><strong>NOTE</strong> originating app has orange background, webtask workflow has blue background.<p>
+
     <form id="auth0-wf" method="POST">
         <input type="submit" value="Start login workflow"/>
     </form>
