@@ -5,6 +5,10 @@
         body { 
             background: #EB5424;
         }
+        pre {
+            word-wrap: break-word;
+            padding: 2em;
+        }
     </style>
 </head>
 <body hidden>
@@ -64,7 +68,7 @@
         // Resume workflow 
         if (!resume_workflow(workflow, { intitial_state: 'google' })) {
             // Workflow completed, do something smart with the results
-            document.getElementById('results').innerHTML = 'Workflow completed. Here are results:\n\n' 
+            document.getElementById('results').innerHTML = 'Workflow completed. Here are results of all workflow steps:\n\n' 
                 + JSON.stringify(get_workflow_state(), null, 2);
             document.forms['auth0-wf'].style.display = 'none';
         }
