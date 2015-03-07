@@ -78,7 +78,9 @@ function view() {/*
                 connections: ['<%- data.strategy %>']
                 <% if (data.title) { %>
                 , dict: {
-                    title: '<%= data.title %>'
+                    signin: {
+                        title: '<%= data.title %>'
+                    }
                 }
                 <% }; %>
             }, function(error, profile, token) {
