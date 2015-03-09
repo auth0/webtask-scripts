@@ -14,7 +14,7 @@ return function (context, callback) {
         });
     }
     else {
-        console.log('Repository ' + context.webhook.repository.full_name + ' but slack credentials not supplied.');
+        console.log('Repository ' + context.webhook.repository.full_name + ' changed but slack credentials not supplied.');
         return callback();
     }
 }
