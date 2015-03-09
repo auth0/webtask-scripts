@@ -35,7 +35,7 @@ return function (context, req, res) {
     aws.config.region = context.data.region;
     aws.config.sslEnabled = true;
     aws.config.logger = process.stdout;
-    var s3 = new aws.S3({ params: { Bucket: context.data.bucket, Key: context.data.key }});
+    var s3 = new aws.S3({ params: { Bucket: context.data.bucket, Key: context.data.path }});
 
     if (context.data.method === 'get') {
         // Stream data from S3
