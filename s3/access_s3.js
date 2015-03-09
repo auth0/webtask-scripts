@@ -29,6 +29,8 @@ return function (context, req, res) {
         context.data.key = context.data.path.substring(i + 1);
     }
 
+    console.log('CONTEXT', context.data);
+
     // Authorize request
 
     var regexp = context.data[context.data.method + '_regex'];
