@@ -17,4 +17,4 @@ return function (context, callback) {
         console.log('Repository ' + context.webhook.repository.full_name + ' changed but slack credentials not supplied.');
         return callback();
     }
-} 
+}
