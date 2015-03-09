@@ -49,7 +49,7 @@ return function (context, req, res) {
                 res.end();
             })
             .on('error', function (error) {
-                return error(500, error.stack || error.message || error);
+                return error(502, error.stack || error.message || error);
             });
     }
 
