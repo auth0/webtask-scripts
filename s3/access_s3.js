@@ -49,16 +49,16 @@ return function (context, req, res) {
     }
     else {
         // Stream data to S3
-        s3.upload({ Body: req })
-              .on('httpUploadProgress', function(evt) { console.log('UPLOAD', evt); })
-              .send(function(err, data) { console.log('SEND', err, data) });
-            // .on('httpDone', function () {
-            //     res.writeHead(200);
-            //     res.end();
-            // })
-            // .on('error', function (error) {
-            //     return error(502, error.stack || error.message || error);
-            // });
+        s3.upload({ Body: req }).send(function(err, data) {
+            if (err) {
+                return error(502, err.stack || err.message || err);
+            } 
+            else {
+                console.log('Upload to S3 completed: ', data.Location);
+                res.writeHead(200, { Location: data.Location });
+                res.end();
+            }
+        });
     }
 
     return;
