@@ -48,7 +48,7 @@ return function (context, req, res) {
 
     if (context.data.method === 'get') {
         // Stream data from S3
-        s3.getObject(s3_params).createReadStream().pipe(res);
+        s3.getObject().createReadStream().pipe(res);
     }
     else {
         // Stream data to S3
