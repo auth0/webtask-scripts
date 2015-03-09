@@ -1,4 +1,4 @@
-// Raw version of this file: 
+// Raw version of this file: https://raw.githubusercontent.com/auth0/webtask-scripts/master/github/smarthook.js
 
 var async = require('async')
     , request = require('request');
