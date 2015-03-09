@@ -28,6 +28,12 @@ return function (context, req, res) {
         return error(403, 'Not authorized');
     }
 
+    console.log('Request: ', { 
+        region: context.data.region, 
+        bucket: context.data.bucket, 
+        path: context.data.path, 
+        method: context.data.method });
+
     // Configure AWS proxy
 
     aws.config.accessKeyId = context.data.access_key_id;
@@ -44,13 +50,15 @@ return function (context, req, res) {
     else {
         // Stream data to S3
         s3.upload({ Body: req })
-            .on('httpDone', function () {
-                res.writeHead(200);
-                res.end();
-            })
-            .on('error', function (error) {
-                return error(502, error.stack || error.message || error);
-            });
+              .on('httpUploadProgress', function(evt) { console.log('UPLOAD', evt); })
+              .send(function(err, data) { console.log('SEND', err, data) });
+            // .on('httpDone', function () {
+            //     res.writeHead(200);
+            //     res.end();
+            // })
+            // .on('error', function (error) {
+            //     return error(502, error.stack || error.message || error);
+            // });
     }
 
     return;
