@@ -31,7 +31,9 @@ return function (context, req, res) {
 
     // Authorize request
 
-    if (!(new RegExp(context.data[context.data.method + '_regex'])).test(context.data.path)) {
+    var regexp = context.data[context.data.method + '_regex'];
+    if (!(new RegExp(regexp)).test(context.data.path)) {
+        console.log('Not authorized:', { regexp: regexp, path: context.data.path });
         return error(403, 'Not authorized');
     }
 
