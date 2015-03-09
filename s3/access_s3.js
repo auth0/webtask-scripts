@@ -7,7 +7,7 @@ return function (context, req, res) {
     // Validate and normalize parameters    
 
     var required_params = [
-        'access_key_id', 'secret_access_key', 'get_regex', 'put_regex', 'region', 'path'
+        'access_key_id', 'secret_access_key', 'get_regex', 'put_regex', 'region', 'path', 'bucket'
     ];
     for (var i in required_params) {
         if (typeof context.data[required_params[i]] !== 'string') {
@@ -18,15 +18,6 @@ return function (context, req, res) {
     context.data.method = context.data.method || 'get';
     if (context.data.method !== 'get' && context.data.method !== 'put') {
         return error(400, 'The `method` parameter must be `put` or `get`.');
-    }
-
-    var i = context.data.path.indexOf('/');
-    if (i <= 0) {
-        return error(400, 'The `path` parameter must be of the form {bucket}/{key}.');
-    }
-    else {
-        context.data.bucket = context.data.path.substring(0, i);
-        context.data.key = context.data.path.substring(i + 1);
     }
 
     // Authorize request
