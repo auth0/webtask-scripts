@@ -1,4 +1,4 @@
-// Raw version of this file: 
+// Raw version of this file: https://raw.githubusercontent.com/auth0/webtask-scripts/master/s3/access_s3.js
 
 var aws = require('aws-sdk');
 
@@ -13,7 +13,7 @@ return function (context, req, res) {
         if (typeof context.data[required_params[i]] !== 'string') {
             return error(400, 'Missing ' + required_params[i] + '.');
         }
-    });
+    };
 
     context.data.method = context.data.method || 'get';
     if (context.data.method !== 'get' && context.data.method !== 'put') {
