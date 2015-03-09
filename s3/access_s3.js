@@ -44,12 +44,12 @@ return function (context, req, res) {
     else {
         // Stream data to S3
         s3.upload({ Body: req })
-            .once('httpDone', function () {
+            .on('httpDone', function () {
                 res.writeHead(200);
                 res.end();
             })
-            .once('error', function (error) {
-                return error(500, error.stack || error.message || error.toString());
+            .on('error', function (error) {
+                return error(500, error.stack || error.message || error);
             });
     }
 
