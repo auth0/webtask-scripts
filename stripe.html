@@ -5,9 +5,9 @@
 <body>
     <h1>Backendless Stripe Payment</h1>
     <p>Powered by <a href="https://webtask.io">Auth0 Webtasks</a></p>
-    <p>Use 4242 4242 4242 4242 as the credit card number and enter a valid expiration date.</p>
 
     <form id="stripe_form" action="https://sandbox.it.auth0.com/auth0-wf?webtask_no_cache=1&key=eyJhbGciOiJIUzI1NiIsImtpZCI6IjEifQ.eyJqdGkiOiI2NWI3ZmE5NWIxNjg0OWFhYjZiY2MyYjhmZTZmNWQ1OSIsImlhdCI6MTQyNjEyMTMyOSwidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2F1dGgwL3dlYnRhc2stc2NyaXB0cy9tYXN0ZXIvc3RyaXBlL3N0cmlwZV9jaGFyZ2UuanMiLCJ0ZW4iOiJhdXRoMC13ZiIsImVjdHgiOiI3YUVUeDJHVXlSRXRQRlUrek94YWlEVDdNMklSR0hOeGR2dEhWUTlnZ0JZSHpzclgyaU5CRHpPdXU0SDQxa05EenNnSkdxdDR6dytoaXNLQzljUmJQdz09LmZEbklhSEIxSnBLTGpzWGYxaXVVMkE9PSJ9.MilM3_dc2EeUaCBy_o6ZyXAbkAT1ZsJDX3NlAI7-cMI" method="POST" hidden>
+        <p>Use 4242 4242 4242 4242 as the credit card number and enter a valid expiration date.</p>
         <input name="currency" value="usd" type="hidden">
         <input name="amount" value="2000" type="hidden">
         <script
@@ -20,9 +20,22 @@
         </script>
     </form>
 
+    <div id="result" hidden>
+        <p>Stripe payment was processed, results are in the URL hash: 
+            <strong id="hash"></strong>
+        </p>
+    </div>
+
     <script>
-        document.forms['stripe_form'].removeAttribute('hidden');
-        //    document.forms['auth0-wf'].style.display = 'none';
+        if (window.location.hash) {
+            // This is a callback from Stripe Webtask, results are in the URL hash
+            document.getElementById('hash').innerHTML = window.location.hash;
+            document.getElementById('result').removeAttribute('hidden');
+        }
+        else {
+            // Show payment button
+            document.forms['stripe_form'].removeAttribute('hidden');
+        }
     </script>
 </body>
 </html>
