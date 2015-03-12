@@ -5,6 +5,7 @@ var request = require('request')
     , querystring = require('querystring');
 
 return function (context, req, res) {
+    console.log('REQUEST', req.headers);
     async.series([
         function (callback) {
             // Collect www-form-urlencoded paylod of a HTTPS form POST
