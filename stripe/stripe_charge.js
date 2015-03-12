@@ -27,7 +27,7 @@ return function (context, req, res) {
         },
         function (callback) {
             // Validate input parameters
-            var required_params = ['stripeToken', 'callback', 'STRIPE_SECRET_KEY'];
+            var required_params = ['stripeToken', 'callback', 'amount', 'currency', 'STRIPE_SECRET_KEY'];
             for (var p in required_params)
                 if (!context.data[required_params[p]])
                     return callback(
@@ -45,6 +45,8 @@ return function (context, req, res) {
                 },
                 form: {
                     source: context.data.stripeToken,
+                    amount: context.data.amount,
+                    currency: context.data.currency
                 }
             }, function (error, sres, body) {
                 if (error)
