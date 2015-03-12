@@ -8,9 +8,8 @@
     <p>Use 4242 4242 4242 4242 as the credit card number and enter a valid expiration date.</p>
 
     <form id="stripe_form" action="https://sandbox.it.auth0.com/auth0-wf?webtask_no_cache=1&key=eyJhbGciOiJIUzI1NiIsImtpZCI6IjEifQ.eyJqdGkiOiI2NWI3ZmE5NWIxNjg0OWFhYjZiY2MyYjhmZTZmNWQ1OSIsImlhdCI6MTQyNjEyMTMyOSwidXJsIjoiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2F1dGgwL3dlYnRhc2stc2NyaXB0cy9tYXN0ZXIvc3RyaXBlL3N0cmlwZV9jaGFyZ2UuanMiLCJ0ZW4iOiJhdXRoMC13ZiIsImVjdHgiOiI3YUVUeDJHVXlSRXRQRlUrek94YWlEVDdNMklSR0hOeGR2dEhWUTlnZ0JZSHpzclgyaU5CRHpPdXU0SDQxa05EenNnSkdxdDR6dytoaXNLQzljUmJQdz09LmZEbklhSEIxSnBLTGpzWGYxaXVVMkE9PSJ9.MilM3_dc2EeUaCBy_o6ZyXAbkAT1ZsJDX3NlAI7-cMI" method="POST" hidden>
-        <input name="currency" type="hidden" value="usd">
-        <input name="amount" type="hidden" value="2000">
-        <input name="callback" type="hidden" value="http://auth0.github.io/webtask-scripts/stripe.html">
+        <input name="currency" value="usd" type="hidden">
+        <input name="amount" value="2000" type="hidden">
         <script
             src="https://checkout.stripe.com/checkout.js" class="stripe-button"
             data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
