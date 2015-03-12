@@ -32,6 +32,7 @@ return function (context, req, res) {
             // Validate input parameters
             if (!context.data.callback)
                 context.data.callback = req.headers['referer'];
+            console.log('CALLBACK', context.data.callback, req.headers['referer']);
             var required_params = ['stripeToken', 'callback', 'amount', 'currency', 'STRIPE_SECRET_KEY'];
             for (var p in required_params)
                 if (!context.data[required_params[p]])
