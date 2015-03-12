@@ -17,7 +17,9 @@ return function (context, req, res) {
                     body = querystring.parse(body);
                     if (!body || typeof body !== 'object')
                         throw error(400, 'Unexpected payload.');
-                    context.data.stripeToken = body.stripeToken;
+                    for (var p in body)
+                        if (!context.data[p])
+                            context.data[p] = body[p];
                 }
                 catch (e) {
                     return callback(e);
@@ -28,6 +30,8 @@ return function (context, req, res) {
         },
         function (callback) {
             // Validate input parameters
+            if (!context.data.callback)
+                context.data.callback = req.headers['referer'];
             var required_params = ['stripeToken', 'callback', 'amount', 'currency', 'STRIPE_SECRET_KEY'];
             for (var p in required_params)
                 if (!context.data[required_params[p]])
