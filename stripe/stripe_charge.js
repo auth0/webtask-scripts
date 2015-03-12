@@ -1,4 +1,4 @@
-// Raw version of this file: 
+// Raw version of this file: https://raw.githubusercontent.com/auth0/webtask-scripts/master/stripe/stripe_charge.js
 
 var request = require('request')
     , async = require('async')
