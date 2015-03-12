@@ -5,7 +5,9 @@ var request = require('request')
     , querystring = require('querystring');
 
 return function (context, req, res) {
-    console.log('REQUEST', req.headers);
+    console.log('Stripe payment request', {
+        referer: req.headers['referer']        
+    });
     async.series([
         function (callback) {
             // Collect www-form-urlencoded paylod of a HTTPS form POST
@@ -32,7 +34,6 @@ return function (context, req, res) {
             // Validate input parameters
             if (!context.data.callback)
                 context.data.callback = req.headers['referer'];
-            console.log('CALLBACK', context.data.callback, req.headers['referer']);
             var required_params = ['stripeToken', 'callback', 'amount', 'currency', 'STRIPE_SECRET_KEY'];
             for (var p in required_params)
                 if (!context.data[required_params[p]])
