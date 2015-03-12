@@ -46,7 +46,7 @@ return function (context, req, res) {
                 form: {
                     source: context.data.stripeToken,
                 }
-            }, function (error, res, body) {
+            }, function (error, sres, body) {
                 if (error)
                     return callback(error);
                 try {
@@ -56,7 +56,7 @@ return function (context, req, res) {
                     return callback(new Error('Unable to parse Stripe response as JSON.'));
                 }
                 var redirect_hash;
-                if (res.statusCode === 200) {
+                if (sres.statusCode === 200) {
                     redirect_hash = querystring.stringify({
                         status: body.status,
                         id: body.id
@@ -66,7 +66,7 @@ return function (context, req, res) {
                     redirect_hash = querystring.stringify({
                         error: (body.error && body.error.message) 
                             ? body.error.message
-                            : 'Unexpected HTTP response ' + res.statusCode + ' from Stripe'
+                            : 'Unexpected HTTP response ' + sres.statusCode + ' from Stripe'
                     });                    
                 }
                 var redirect_url = context.data.callback + '#' + redirect_hash;
