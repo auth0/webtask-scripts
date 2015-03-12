@@ -63,11 +63,10 @@ return function (context, req, res) {
                     });
                 }
                 else {
-                    var error = body.error ? body.error.message;
-                    if (!error)
-                        error = 'Unexpected HTTP response ' + res.statusCode + ' from Stripe';
                     redirect_hash = querystring.stringify({
-                        error: error
+                        error: (body.error && body.error.message) 
+                            ? body.error.message
+                            : 'Unexpected HTTP response ' + res.statusCode + ' from Stripe'
                     });                    
                 }
                 var redirect_url = context.data.callback + '#' + redirect_hash;
