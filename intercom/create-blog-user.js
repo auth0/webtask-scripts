@@ -8,7 +8,7 @@ function getAndCreateWithUserId(ctx, cb) {
     headers: {
       'Content-Type': 'applicatio/json',
       'Accepts': 'applicatio/json'
-    }
+    },
     auth: {
       user: ctx.data.INTERCOM_USER,
       pass: ctx.data.INTERCOM_PASSWORD
