@@ -8,6 +8,7 @@ function getAndCreateWithUserId(ctx, cb) {
       pass: ctx.data.INTERCOM_PASSWORD
     }
   }, function (err, resp, result) {
+    console.log("Got response for userid", result);
     var userId = result.user_id;
     createWithUserId(ctx, cb, userId);
   });
