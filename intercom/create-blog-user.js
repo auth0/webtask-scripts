@@ -1,6 +1,7 @@
 var request = require('request');
 
 function getAndCreateWithUserId(ctx, cb) {
+  console.log("Getting userId with email", ctx.data.email)
   request.get({
     url: 'https://api.intercom.io/users?email=' + ctx.data.email,
     auth: {
