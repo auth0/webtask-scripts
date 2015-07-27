@@ -63,6 +63,7 @@ module.exports = function(ctx, cb) {
       return cb(err);
     }
 
+    console.log("Response is", resp);
     if (resp.statusCode < 200 || resp.statusCode > 299) {
       if (resp.statusCode === 400) {
         return getAndCreateWithUserId(ctx, cb);
