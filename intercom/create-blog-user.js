@@ -5,6 +5,10 @@ function getAndCreateWithUserId(ctx, cb) {
   request.get({
     url: 'https://api.intercom.io/users?email=' + ctx.data.email,
     json: true,
+    headers: {
+      'Content-Type': 'applicatio/json',
+      'Accepts': 'applicatio/json'
+    }
     auth: {
       user: ctx.data.INTERCOM_USER,
       pass: ctx.data.INTERCOM_PASSWORD
@@ -59,7 +63,6 @@ module.exports = function(ctx, cb) {
       }
     }
   }, function (err, resp, result) {
-    console.log("Response is", resp);
     if (err) {
       console.log("Error", err);
       return cb(err);
