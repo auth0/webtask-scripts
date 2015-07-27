@@ -6,8 +6,8 @@ function getAndCreateWithUserId(ctx, cb) {
     url: 'https://api.intercom.io/users?email=' + ctx.data.email,
     json: true,
     headers: {
-      'Content-Type': 'applicatio/json',
-      'Accepts': 'applicatio/json'
+      'Content-Type': 'application/json',
+      'Accepts': 'application/json'
     },
     auth: {
       user: ctx.data.INTERCOM_USER,
