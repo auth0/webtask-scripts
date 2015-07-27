@@ -14,7 +14,18 @@ function getAndCreateWithUserId(ctx, cb) {
       pass: ctx.data.INTERCOM_PASSWORD
     }
   }, function (err, resp, result) {
+    if (err) {
+      console.log(err);
+      return cb(err);
+    }
+
+    if (resp.statusCode < 200 || resp.statusCode > 299) {
+      console.log("Error", resp.statusCode, result);
+      return cb(new Error(result));
+    }
+
     console.log("Got response for userid", result);
+
     var userId = result.user_id;
     return createWithUserId(ctx, cb, userId);
   });
