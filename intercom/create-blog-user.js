@@ -58,12 +58,13 @@ module.exports = function(ctx, cb) {
       }
     }
   }, function (err, resp, result) {
+    console.log("Response is", resp);
     if (err) {
       console.log("Error", err);
       return cb(err);
     }
 
-    console.log("Response is", resp);
+
     if (resp.statusCode < 200 || resp.statusCode > 299) {
       if (resp.statusCode === 400) {
         return getAndCreateWithUserId(ctx, cb);
