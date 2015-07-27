@@ -15,13 +15,16 @@ module.exports = function(ctx, cb) {
     }
   }, function (err, resp, result) {
     if (err) {
+      console.log("Error", err);
       return cb(err);
     }
 
     if (resp.statusCode < 200 || resp.statusCode > 299) {
+      console.log("Error", resp.statusCode, result);
       return cb(new Error(result));
     }
 
+    console.log("All ok");
     return cb(null, result);
   });  
 };
