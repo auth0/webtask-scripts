@@ -18,7 +18,7 @@ module.exports = function(ctx, cb) {
       return cb(err);
     }
 
-    if (resp.statusCode !== 200) {
+    if (resp.statusCode < 200 || resp.statusCode > 299) {
       return cb(new Error(result));
     }
 
