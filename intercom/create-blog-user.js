@@ -4,6 +4,7 @@ function getAndCreateWithUserId(ctx, cb) {
   console.log("Getting userId with email", ctx.data.email);
   request.get({
     url: 'https://api.intercom.io/users?email=' + ctx.data.email,
+    json: true,
     auth: {
       user: ctx.data.INTERCOM_USER,
       pass: ctx.data.INTERCOM_PASSWORD
@@ -11,7 +12,7 @@ function getAndCreateWithUserId(ctx, cb) {
   }, function (err, resp, result) {
     console.log("Got response for userid", result);
     var userId = result.user_id;
-    createWithUserId(ctx, cb, userId);
+    return createWithUserId(ctx, cb, userId);
   });
 }
 
