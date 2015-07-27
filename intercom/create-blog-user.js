@@ -15,13 +15,13 @@ module.exports = function(ctx, cb) {
     }
   }, function (err, resp, result) {
     if (err) {
-      cb(err);
+      return cb(err);
     }
 
     if (resp.statusCode !== 200) {
-      cb(resp);
+      return cb(new Error(result));
     }
 
-    cb(null, result);
+    return cb(null, result);
   });  
 };
