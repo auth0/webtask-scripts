@@ -10,7 +10,7 @@ return function (context, callback) {
         method: 'POST',
         json: true,
         body: {
-          "text": "A new user has subscribed to the blog " + context.body.data.item..email
+          "text": "A new user has subscribed to the blog " + context.body.data.item.email
         }
       },
       function (error, res, body) {
