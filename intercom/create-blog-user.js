@@ -1,66 +1,19 @@
 var request = require('request');
 
-function getAndCreateWithUserId(ctx, cb) {
-  console.log("Getting userId with email", ctx.data.email);
-  request.get({
-    url: 'https://api.intercom.io/users?email=' + ctx.data.email,
-    json: true,
-    headers: {
-      'Content-Type': 'application/json',
-      'Accepts': 'application/json'
-    },
-    auth: {
-      user: ctx.data.INTERCOM_USER,
-      pass: ctx.data.INTERCOM_PASSWORD
-    }
-  }, function (err, resp, result) {
-    if (err) {
-      console.log(err);
-      return cb(err);
-    }
-
-    if (resp.statusCode < 200 || resp.statusCode > 299) {
-      console.log("Error", resp.statusCode, result);
-      return cb(new Error(result));
-    }
-
-    console.log("Got response for userid", result);
-
-    var userId = result.user_id;
-    return createWithUserId(ctx, cb, userId);
-  });
-}
-
-function createWithUserId(ctx, cb, userId) {
-  request.post({
-    url: 'https://api.intercom.io/users',
-    auth: {
-      user: ctx.data.INTERCOM_USER,
-      pass: ctx.data.INTERCOM_PASSWORD
-    },
-    json: {
-      "user_id": userId,
-      "custom_attributes": {
-        "blog_subs" : true
-      }
-    }
-  }, function (err, resp, result) {
-    if (err) {
-      console.log("Error", err);
-      return cb(err);
-    }
-
-    if (resp.statusCode < 200 || resp.statusCode > 299) {
-      console.log("Error", resp.statusCode, result);
-      return cb(new Error(result));
-    }
-
-    console.log("All ok");
-    return cb(null, result);
-  });  
-}
-
 module.exports = function(ctx, cb) {
+
+  var attributes = {
+    "blog_subs" : true
+  };
+
+  if (ctx.data.screen) {
+    attributes.blog_subs_medium = 'twitter';
+    attributes.twitter = ctx.data.screen;
+    attributes.twitter_name = ctx.data.name;
+  } else {
+    attributes.blog_subs_medium = 'blog';
+  }
+
   request.post({
     url: 'https://api.intercom.io/users',
     auth: {
@@ -69,9 +22,7 @@ module.exports = function(ctx, cb) {
     },
     json: {
       "email": ctx.data.email,
-      "custom_attributes": {
-        "blog_subs" : true
-      }
+      "custom_attributes": attributes
     }
   }, function (err, resp, result) {
     if (err) {
@@ -81,9 +32,6 @@ module.exports = function(ctx, cb) {
 
 
     if (resp.statusCode < 200 || resp.statusCode > 299) {
-      if (resp.statusCode === 400) {
-        return getAndCreateWithUserId(ctx, cb);
-      }
       console.log("Error", resp.statusCode, result);
       return cb(new Error(result));
     }
