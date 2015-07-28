@@ -5,6 +5,7 @@ return function (context, callback) {
         context.body.data.item && 
         context.body.data.item.custom_attributes && 
         context.body.data.item.custom_attributes.blog_subs) {
+      
       request({
         url: "https://hooks.slack.com/services/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",
         method: 'POST',
