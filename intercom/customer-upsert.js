@@ -1,3 +1,5 @@
+'use latest';
+
 var request = require('request');
 
 const URL = 'https://api.intercom.io/users';
