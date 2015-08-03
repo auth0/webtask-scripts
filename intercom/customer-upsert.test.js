@@ -11,20 +11,22 @@ test('Customer Upsert possitive test', (t) => {
   let resultMock = { text: 'everything is alright' }
   var contextMock = {
     data: {
-      email: 'test@auth0.com',
-      attributes: {
-        custom_attr1: 'hi!'
-      },
       //ATTENTION: this parameters are here only for testing purposes
       //you should always set this parameters as `--secret`
       INTERCOM_USER: 'not a real user',
-      INTERCOM_PASSWORD: 'not a real password'
+      INTERCOM_PASSWORD: 'not a real password',
+      payload: {
+        email: 'test@auth0.com',
+        attributes: {
+          custom_attr1: 'hi!'
+        }
+      }
     }
   };
 
   let api = nock('https://api.intercom.io')
     .post('/users', body => {
-        t.equal(body.email, contextMock.data.email, 'it should send the email as part of the payload');
+        t.equal(body.email, contextMock.data.payload.email, 'it should send the email as part of the payload');
         t.deepEqual(body.custom_attributes, contextMock.data.attributes, 'it should send the attrs as payload');
         return true;
       })

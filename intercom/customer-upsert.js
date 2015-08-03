@@ -8,12 +8,11 @@ const URL = 'https://api.intercom.io/users';
  * Insert or update (hence upsert) customer data to Intercom.
  * More info at https://doc.intercom.io/api/#create-or-update-user
  *
- * @param {String} context.data.email - Customer's email, be sure to include this in the update case
- * @param {Object} context.data.attributes - Custom Customer attributes
+ * @param {String} context.data.payload - The payload that you are sending to Intercom
  */
 module.exports = function customerUpsert(context, callback) {
 
-  let { email, attributes, INTERCOM_USER, INTERCOM_PASSWORD } = context.data;
+  let { payload, INTERCOM_USER, INTERCOM_PASSWORD } = context.data;
 
   request.post({
     url: URL,
@@ -21,10 +20,7 @@ module.exports = function customerUpsert(context, callback) {
       user: INTERCOM_USER,
       pass: INTERCOM_PASSWORD
     },
-    json: {
-      "email": email,
-      "custom_attributes": attributes
-    }
+    json: payload
   }, function (err, resp, result) {
     if (err) {
       console.log("Error", err);
