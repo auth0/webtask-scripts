@@ -9,7 +9,7 @@ const randomString = () => Math.random().toString(36).substring(7);
 test('Mongo Upsert possitive test', (t) => {
   t.plan(6);
 
-  let collection = 'test';
+  let COLLECTION = 'test';
   let query = { email: `${randomString()}@auth0.com` };
   let dataToUpsert = Object.assign({}, query, { name: 'Jim Morrison' });
 
@@ -18,7 +18,7 @@ test('Mongo Upsert possitive test', (t) => {
       //ATTENTION: this parameter is here only for testing purposes
       //you should always set it as `--secret`
       MONGO_URL,
-      collection,
+      COLLECTION,
       query,
       dataToUpsert
     }
