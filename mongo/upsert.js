@@ -23,7 +23,7 @@ module.exports = function mongoUpsert(context, callback) {
     if(err) return callback(err);
 
     db.collection(COLLECTION)
-      .update(query, dataToUpsert, {upsert: true}, (err, result) => {
+      .update(query, { $set: dataToUpsert }, {upsert: true}, (err, result) => {
           if(err) return callback(err);
 
           db.close();
