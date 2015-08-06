@@ -1,0 +1,26 @@
+{
+  "name": "webtask-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webtask.js",
+  "scripts": {
+    "test": "babel-node **/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auth0/webtask-scripts"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/auth0/webtask-scripts/issues"
+  },
+  "homepage": "https://github.com/auth0/webtask-scripts",
+  "devDependencies": {
+    "babel": "^5.8.20",
+    "mongodb": "^2.0.39",
+    "nock": "^2.9.1",
+    "request": "^2.60.0",
+    "tape": "^4.0.1"
+  }
+}
