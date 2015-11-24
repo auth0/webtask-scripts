@@ -1,10 +1,10 @@
 var url = require('url');
 module.exports = function (ctx, cb) {
-	var whitelist = ['metrics.it.auth0.com']
-  
+  var whitelist = ['metrics.it.auth0.com']
+
   var tartetUrl = ctx.data.url;
-	var target = url.parse(tartetUrl).hostname;
-	var ok = whitelist.some(function (host) {
+  var target = url.parse(tartetUrl).hostname;
+  var ok = whitelist.some(function (host) {
     return target === host;
   });
 
