@@ -1,6 +1,6 @@
 var url = require('url');
 module.exports = function (ctx, cb) {
-  var whitelist = ['metrics.it.auth0.com']
+  var whitelist = ['metrics.it.auth0.com', 'opensharecount.com'];
 
   var tartetUrl = ctx.data.url;
   var target = url.parse(tartetUrl).hostname;
