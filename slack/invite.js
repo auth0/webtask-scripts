@@ -1,5 +1,5 @@
 // invites an external user to the active channel (as a single guest channel)
-// wt create invite.js --name slack-invite --secret SLACK_TOKEN=<get it from slack admin interface> --secret SLACK_CHANNEL_NAME=ext --secret SLACK_COMMAND_TOKEN=..create a slash command in slack... --secret SLACK_DOMAIN=yourdomain
+// wt create invite.js --name slack-invite --secret SLACK_TOKEN=<get it from https://api.slack.com/web> --secret SLACK_CHANNEL_NAME=ext --secret SLACK_COMMAND_TOKEN=<create one at https://slack.com/services Slash Commands> --secret SLACK_DOMAIN=yourdomain
 var request = require('request-promise');
 var token;
 var domain;
@@ -32,16 +32,16 @@ module.exports =
         .then(function(json) {
           if (!json.ok) {
             if (json.error === 'already_invited') {
-              cb(null, "The user " + mail + " was already invited. If the user didn't get the invite email please contact a Slack admin to resend the invite. Also take into account that a single guest channel can only be on a single channel :)");
+              return cb(null, "The user " + mail + " was already invited. If the user didn't get the invite email please contact a Slack admin to resend the invite. Also take into account that a single guest channel can only be on a single channel :)");
             } else {
-              cb(null, "There was an error: " + json.error);
+              return cb(null, "There was an error: " + json.error);
             }
           } else {
-            cb(null, "Invitation sent to <" + mail + "> for this channel: " + context.data.channel_name);
+            return cb(null, "Invitation sent to <" + mail + "> for this channel: " + context.data.channel_name);
           }
         })
         .catch(function(err) {
-          cb(err, null);
+          return cb(err, null);
         });
     }
 
