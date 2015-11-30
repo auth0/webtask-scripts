@@ -1,5 +1,10 @@
-// invites an external user to the active channel (as a single guest channel)
-// wt create invite.js --name slack-invite --secret SLACK_TOKEN=<get it from https://api.slack.com/web> --secret SLACK_CHANNEL_NAME=ext --secret SLACK_COMMAND_TOKEN=<create one at https://slack.com/services Slash Commands> --secret SLACK_DOMAIN=yourdomain
+// summary: invites an external user to the active channel (as a single guest channel)
+//    wt create invite.js --name slack-invite 
+//                        --secret SLACK_TOKEN=<get it from https://api.slack.com/web> 
+//                        --secret SLACK_COMMAND_TOKEN=<create one at https://slack.com/services Slash Commands> 
+//                        --secret SLACK_DOMAIN=yourdomain
+//                        --secret SLACK_ALLOWED_CHANNEL_PREFIX=ext
+
 var request = require('request-promise');
 var token;
 var domain;
@@ -13,9 +18,10 @@ module.exports =
         return cb(null, "Tokens don't match, make sure to use the token provided in the Slash Command integration (SLACK_COMMAND_TOKEN)");
       
       if (!context.data.SLACK_DOMAIN)
-        return cb(null, "Please provide your slack domain (SLACK_DOMAIN)")
+        return cb(null, "Please provide your slack domain (SLACK_DOMAIN)");
       
-      if (context.data.channel_name.slice(0, 3) !== (context.data.SLACK_ALLOWED_CHANNEL_PREFIX || 'ext' ))
+      var prefix = context.data.SLACK_ALLOWED_CHANNEL_PREFIX || 'ext';
+      if (context.data.channel_name.slice(0, prefix.length) !== prefix)
         return cb(null, "You can only invite guests to channels starting with `ext`")
       
       var token = context.data.SLACK_TOKEN;
