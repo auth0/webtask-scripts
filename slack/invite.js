@@ -15,7 +15,7 @@ module.exports =
       if (!context.data.SLACK_DOMAIN)
         return cb(null, "Please provide your slack domain (SLACK_DOMAIN)")
       
-      if (context.data.channel_name.slice(0, 3) !== 'ext')
+      if (context.data.channel_name.slice(0, 3) !== (context.data.SLACK_ALLOWED_CHANNEL_PREFIX || 'ext' ))
         return cb(null, "You can only invite guests to channels starting with `ext`")
       
       var token = context.data.SLACK_TOKEN;
