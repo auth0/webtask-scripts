@@ -11,6 +11,8 @@
 // Usage:
 //    /invite-guest foo@gmail.com
 //
+// Credits to https://github.com/n4ch03 for the initial code
+//
 var request = require('request-promise');
 var token;
 var domain;
