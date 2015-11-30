@@ -30,7 +30,7 @@ module.exports =
       
       var prefix = context.data.SLACK_ALLOWED_CHANNEL_PREFIX || 'ext';
       if (context.data.channel_name.slice(0, prefix.length) !== prefix)
-        return cb(null, "You can only invite guests to channels starting with `ext`")
+        return cb(null, "You can only invite guests to channels starting with `" + prefix +"`")
       
       var token = context.data.SLACK_TOKEN;
       var mail = context.data.text;
