@@ -1,4 +1,5 @@
-// wt create invite.js --name slack-invite --secret SLACK_TOKEN=...get it from web... --secret SLACK_CHANNEL_NAME=ext --secret SLACK_COMMAND_TOKEN=W4WjK94GP3hDvBJnHKDM5st5 --secret SLACK_DOMAIN=auth0
+// invites an external user to the active channel (as a single guest channel)
+// wt create invite.js --name slack-invite --secret SLACK_TOKEN=<get it from slack admin interface> --secret SLACK_CHANNEL_NAME=ext --secret SLACK_COMMAND_TOKEN=..create a slash command in slack... --secret SLACK_DOMAIN=yourdomain
 var request = require('request-promise');
 var token;
 var domain;
