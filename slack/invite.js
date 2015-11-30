@@ -1,10 +1,16 @@
-// summary: invites an external user to the active channel (as a single guest channel)
-//    wt create invite.js --name slack-invite 
-//                        --secret SLACK_TOKEN=<get it from https://api.slack.com/web> 
-//                        --secret SLACK_COMMAND_TOKEN=<create one at https://slack.com/services Slash Commands> 
-//                        --secret SLACK_DOMAIN=yourdomain
+//
+// Summary: invites an external user to the active channel (as a single guest channel)
+// Install:
+//    $ sudo npm install wt -g
+//    $ wt init <youremail>
+//    $ wt create invite.js --name slack-invite \
+//                        --secret SLACK_TOKEN=<get it from https://api.slack.com/web> \
+//                        --secret SLACK_COMMAND_TOKEN=<create one at https://slack.com/services Slash Commands> \
+//                        --secret SLACK_DOMAIN=yourdomain \
 //                        --secret SLACK_ALLOWED_CHANNEL_PREFIX=ext
-
+// Usage:
+//    /invite-guest foo@gmail.com
+//
 var request = require('request-promise');
 var token;
 var domain;
