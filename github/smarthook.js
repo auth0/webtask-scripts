@@ -79,7 +79,7 @@ return function (context, req, res) {
             context.webhook = body;
             var args = [ context, function (err, data) {
                 if (err) {
-                    writeHead(400, { 'Content-Type': 'application/json' });
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         code: 400,
                         error: 'Script returned an error.',
@@ -93,10 +93,10 @@ return function (context, req, res) {
 
                 try {
                     body = data ? JSON.stringify(data) : '{}';
-                    writeHead(200, { 'Content-Type': 'application/json' });
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
                 }
                 catch (e) {
-                    writeHead(400, { 'Content-Type': 'application/json' });
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
                     body = JSON.stringify({
                         code: 400,
                         error: 'Error when JSON serializing the result of the JavaScript code.',
@@ -118,7 +118,7 @@ return function (context, req, res) {
             }
             catch (e) {
                 try {
-                    writeHead(500, { 'Content-Type': 'application/json' });
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         code: 500,
                         error: 'Script generated an unhandled synchronous exception.',
