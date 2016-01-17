@@ -1,4 +1,6 @@
 var url = require('url');
+var request = require('request');
+
 module.exports = function (ctx, cb) {
   var whitelist = ['metrics.it.auth0.com', 'opensharecount.com'];
 
