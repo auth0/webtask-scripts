@@ -1,4 +1,5 @@
-// wt create wt.js -s pg_username=webtask -s pg_password=******* -s tunnel_rsa_private_key="-----BEGIN RSA PRIVATE KEY-----\n........\n-----END RSA PRIVATE KEY----"
+//   wt create dwh.js -s pg_username=webtask -s pg_password=******* -s tunnel_rsa_private_key="-----BEGIN RSA PRIVATE KEY-----\n........\n-----END RSA PRIVATE KEY----"
+
 return function (context, cb) {    
 
   var err;
