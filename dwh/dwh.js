@@ -1,10 +1,10 @@
 /*
 URL=$(wt create \
-   -s pg_username=<USER> \
-   -s pg_password=<PASS> \
-   -s tunnel_rsa_private_key="<KEY>" \
-   -s pg_db=<DB> \
-   dwh.js)
+    -s pg_username=<USER> \
+    -s pg_password=<PASS> \
+    -s tunnel_rsa_private_key="<KEY>" \
+    -s pg_db=<DB> \
+    dwh.js)
 
 curl "$URL?pg_db=<PG_DATABASE>&pg_host=<PG_HOST>&pg_port=5439&tunnel_user=<TUNNEL_USER>&tunnel_host=<TUNNEL_HOST>&q=select%20*%20from%20tenants%20limit%201"
 */
@@ -13,6 +13,9 @@ var Bluebird = require('bluebird');
 var Net = require('net');
 var Postgres = require('pg');
 var SSH = require('ssh2');
+
+var FORWARDER_PORT = Math.floor(4000 + Math.random() * 1000);
+var tunnel$;
 
 return function(context, req, res) {
 
@@ -39,15 +42,17 @@ return function(context, req, res) {
         }
     }
 
-    var conString = "postgres://" + context.secrets.pg_username + ":" + context.secrets.pg_password + "@localhost:5439/" + context.secrets.pg_db;
+    var connOptions = "postgres://" + context.secrets.pg_username + ":" + context.secrets.pg_password + "@localhost:" + FORWARDER_PORT + "/" + context.secrets.pg_db;
     
-    var tunnel$ = createTunnel({
-        host: context.data.tunnel_host,
-        username: context.data.tunnel_user,
-        privateKey: context.secrets.tunnel_rsa_private_key.replace(/\\[n]/g, '\n'),
-        pgServer: context.data.pg_host,
-        pgPort: context.data.pg_port,
-    });
+    tunnel$ = tunnel$
+        ?   tunnel$
+        :   createTunnel({
+                host: context.data.tunnel_host,
+                username: context.data.tunnel_user,
+                privateKey: context.secrets.tunnel_rsa_private_key.replace(/\\[n]/g, '\n'),
+                pgServer: context.data.pg_host,
+                pgPort: context.data.pg_port,
+            });
     
     return tunnel$
         .then(onTunnelReady, onTunnelError);
@@ -56,7 +61,7 @@ return function(context, req, res) {
     function onTunnelReady(end) {
         console.log('Got a tunnel');
         
-        Postgres.connect(conString, function (err, client, done) {
+        Postgres.connect(connOptions, function (err, client, done) {
             console.log('connected to pg');
             if (err) {
                 end();
@@ -66,7 +71,6 @@ return function(context, req, res) {
             }
             client.query(context.data.q, function(err, result) {
                 done();
-                end();
                 
                 if (err) {
                     console.log('error running query', err);
@@ -103,7 +107,7 @@ function createTunnel(options) {
             // },
         };
         
-        console.log('Initiating connection', connectOptions);
+        console.log('Initiating connection');
         
         ssh.on('ready', onClientReady);
         ssh.on('error', onClientError);
@@ -113,9 +117,14 @@ function createTunnel(options) {
         function end() {
             console.log('Ending ssh tunnel');
             ssh.end();
+            
+            tunnel$ = null;
         }
         
         function onClientError(err) {
+            console.log('Client error', err.message);
+            tunnel$ = null;
+            
             return reject(err);
         }
         
@@ -123,7 +132,7 @@ function createTunnel(options) {
             console.log('ssh client ready');
             
             var listener = Net.createServer(function (sock) {
-                console.log('Created raw network server');
+                console.log('Created raw network server', sock.remoteAddress, sock.remotePort);
                 
                 ssh.forwardOut(sock.remoteAddress, sock.remotePort, options.pgServer, options.pgPort, function (err, stream) {
                     if (err) {
@@ -138,15 +147,19 @@ function createTunnel(options) {
                 });
             });
             
+            listener.on('close', function () {
+                console.log('Forwarder closed');
+                
+                end();
+            });
+            
             listener.on('error', function (err) {
                 console.log('Forwarder error', err.message);
                 
                 end();
-                
-                return reject(err);
             });
             
-            listener.listen(5439, function () {
+            listener.listen(FORWARDER_PORT, function () {
                 console.log('Forwarding server now listening', arguments);
                 
                 return resolve(end);
