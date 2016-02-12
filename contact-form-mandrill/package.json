@@ -1,0 +1,17 @@
+{
+  "name": "contact-form-mandrill",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "node deploy.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "mandrill-api": "^1.0.45"
+  },
+  "devDependencies": {
+    "sandboxjs": "^2.1.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "webtaskToken": "",
+  "secrets": {
+    "MANDRILL_KEY": "",
+    "from_email" : "",
+    "to": ""
+  }
+}
