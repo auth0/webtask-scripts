@@ -20,17 +20,17 @@ var tunnel$;
 return function(context, req, res) {
 
     var err;
-    ['pg_username', 'pg_password', 'tunnel_rsa_private_key'].forEach(function(i) {
+    ['token', 'pg_username', 'pg_password', 'tunnel_rsa_private_key'].forEach(function(i) {
         if (typeof context.secrets[i] !== 'string') {
             err = i;
         }
     });
-    ['pg_host', 'pg_port', 'pg_db', 'tunnel_user', 'tunnel_host', 'q'].forEach(function(i) {
+    ['token', 'pg_host', 'pg_port', 'pg_db', 'tunnel_user', 'tunnel_host', 'q'].forEach(function(i) {
         if (typeof context.data[i] !== 'string') {
             err = i;
         }
     });
-
+    
     if (err) {
         try {
             console.log('ERROR: request without ' + err + '.');
@@ -40,6 +40,12 @@ return function(context, req, res) {
         catch (e) {
             // ignore
         }
+    }
+    
+    if (context.secrets.token !== context.data.token) {
+        console.log('Unauthorized');
+        res.writeHead(401);
+        return res.end('Missing token');
     }
 
     var connOptions = "postgres://" + context.secrets.pg_username + ":" + context.secrets.pg_password + "@localhost:" + FORWARDER_PORT + "/" + context.secrets.pg_db;
