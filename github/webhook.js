@@ -7,6 +7,7 @@ return function (context, req, res) {
     var body = '';
     var modified = {};
     var removed = {};
+    var added = {};
 
     var err;
     ['auth0_client_id', 'auth0_client_secret', 'auth0_account'].forEach(function (i) {
@@ -73,17 +74,17 @@ return function (context, req, res) {
                 for (var i = body.commits.length - 1; i >= 0; i--) {
                     var commit = body.commits[i];
                     if (Array.isArray(commit.added))
-                        commit.added.forEach(process(modified));
+                        commit.added.forEach(process(added));
                     if (Array.isArray(commit.modified))
                         commit.modified.forEach(process(modified));
                     if (Array.isArray(commit.removed))
-                        commit.removed.forEach(process(removed, modified));
+                        commit.removed.forEach(process(removed, modified, added));
                 }
             }
 
             return callback();
 
-            function process(a, b) {
+            function process(a, b, c) {
                 return function (file) {
                     var match = file.match(/^rules\/([^\.]+)\.js$/);
                     if (match) {
@@ -91,6 +92,9 @@ return function (context, req, res) {
                         a[rule] = 1;
                         if (b) {
                             delete b[rule];
+                        }
+                        if (c) {
+                            delete c[rule];
                         }
                     }
                 }
@@ -101,7 +105,8 @@ return function (context, req, res) {
             console.log({ 
                 account: context.data.auth0_account, 
                 modified_rules: Object.getOwnPropertyNames(modified), 
-                removed_rules: Object.getOwnPropertyNames(removed)
+                removed_rules: Object.getOwnPropertyNames(removed),
+                added_rules: Object.getOwnPropertyNames(added)
             });
 
             var base_url = 'https://raw.githubusercontent.com/' 
@@ -146,10 +151,10 @@ return function (context, req, res) {
                 }, callback);
         },
         function (callback) {
-            // Update added or modified rules
+            // Add new rules
             var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/rules';
             async.eachSeries(
-                Object.getOwnPropertyNames(modified),
+                Object.getOwnPropertyNames(added),
                 function (rule, callback) {
                     request({
                         url: base_url,
@@ -167,7 +172,33 @@ return function (context, req, res) {
                         if (error)
                             return callback(error);
                         if (!ares.statusCode || ares.statusCode !== 201)
-                            return callback(new Error('Error updating rule ' + base_url + rule + '. HTTP status ' + ares.statusCode));
+                            return callback(new Error('Error adding rule `' + rule + '`. HTTP status ' + ares.statusCode));
+                        return callback();
+                    });
+                }, callback);
+        },
+        function (callback) {
+            // Modify existing rules
+            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/rules/';
+            async.eachSeries(
+                Object.getOwnPropertyNames(modified),
+                function (rule, callback) {
+                    request({
+                        url: base_url + rule,
+                        method: 'PUT',
+                        headers: {
+                            Authorization: 'Bearer ' + context.data.auth0_token,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            status: true,
+                            script: modified[rule]
+                        })
+                    }, function (error, ares) {
+                        if (error)
+                            return callback(error);
+                        if (!ares.statusCode || ares.statusCode !== 200)
+                            return callback(new Error('Error updating rule `' + rule + '`. HTTP status ' + ares.statusCode));
                         return callback();
                     });
                 }, callback);
