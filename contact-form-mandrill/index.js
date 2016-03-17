@@ -89,6 +89,9 @@ function validation(res, post) {
     data.html += '<p><strong>' + item.label + ':</strong> ' + (post[item.id] || '') + '</p>';
   });
 
+  // Fix line breaks
+  data.html = data.html.replace(/(?:\r\n|\r|\n)/g, '<br />');
+
   return data;
 }
 

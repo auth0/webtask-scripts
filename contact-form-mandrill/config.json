@@ -1,4 +1,5 @@
 {
+  "webtaskName": "contact-form-mandrill",
   "webtaskToken": "",
   "secrets": {
     "MANDRILL_KEY": "",
