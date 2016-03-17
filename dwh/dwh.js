@@ -25,7 +25,7 @@ return function(context, req, res) {
             err = i;
         }
     });
-    ['token', 'pg_host', 'pg_port', 'pg_db', 'tunnel_user', 'tunnel_host', 'q'].forEach(function(i) {
+    ['bearer_token', 'pg_host', 'pg_port', 'pg_db', 'tunnel_user', 'tunnel_host', 'q'].forEach(function(i) {
         if (typeof context.data[i] !== 'string') {
             err = i;
         }
@@ -48,8 +48,7 @@ return function(context, req, res) {
         return res.end('Missing token');
     }
 
-    var connOptions = "postgres://" + context.secrets.pg_username + ":" + context.secrets.pg_password + "@localhost:" + FORWARDER_PORT + "/" + context.secrets.pg_db;
-    
+    var connOptions = "postgres://" + context.secrets.pg_username + ":" + context.secrets.pg_password + "@localhost:" + FORWARDER_PORT + "/" + context.secrets.pg_db + '?ssl=true';
     tunnel$ = tunnel$
         ?   tunnel$
         :   createTunnel({
@@ -107,10 +106,10 @@ function createTunnel(options) {
         var connectOptions = {
             host: options.host,
             username: options.username,
-            privateKey: options.privateKey,
+            privateKey: options.privateKey
             // debug: function (msg) {
-            //     console.log('DEBUG', msg);
-            // },
+            //      console.log('DEBUG', msg);
+            // }
         };
         
         console.log('Initiating connection');
