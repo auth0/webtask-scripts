@@ -1,6 +1,6 @@
 const mandrill = require('mandrill-api@1.0.45');
 
-const mandrillClient = new mandrill.Mandrill(context.data.MANDRILL_KEY);
+var mandrillClient;
 
 // Max mails per second
 const maxRate = 0.2;
@@ -27,6 +27,8 @@ module.exports = function(context, cb) {
     if(debug) {
         console.log('Debug mode enabled');
     }
+
+    mandrillClient = new mandrill.Mandrill(context.data.MANDRILL_KEY);
 
     context.storage.get((error, data) => {
         if(data) {
