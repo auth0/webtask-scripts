@@ -33,12 +33,12 @@ module.exports = function(context, cb) {
     context.storage.get((error, data) => {
         if(data) {
             sent = data;
-
-            //TODO: Don't do this! Generate one time links!
-            const pdfUrl = `https://cdn.auth0.com/blog/pdf/${context.data.pdfId}.pdf`;
-
-            sendEmail(context.data.email, context.data.name, pdfUrl, context.storage, cb);
         }
+
+        //TODO: Don't do this! Generate one time links!
+        const pdfUrl = `https://cdn.auth0.com/blog/pdf/${context.data.pdfId}.pdf`;
+
+        sendEmail(context.data.email, context.data.name, pdfUrl, context.storage, cb);
     });
 }
 
