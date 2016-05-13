@@ -1,0 +1,15 @@
+{
+  "secret": {
+    "host": "",
+    "port": "",
+    "username": "",
+    "password": "",
+    "AWS_ACCESS_KEY_ID": "",
+    "AWS_ACCESS_KEY_SECRET": "",
+    "AWS_REGION": "",
+    "S3_BUCKET": ""
+  },
+  "param": {
+    "root": ""
+  }
+}
