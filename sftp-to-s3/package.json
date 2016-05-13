@@ -1,0 +1,49 @@
+{
+  "name": "sftp-to-s3",
+  "version": "1.0.0",
+  "description": "Automate the copy of content from sftp to AWS S3 with webtasks",
+  "main": "dist/index.js",
+  "scripts": {
+    "postinstall": "npm run compile:production",
+    "test": "npm run lint",
+    "deploy": "npm run compile:production && node tools/deploy",
+    "development": "node tools/development",
+    "start": "node dist/run",
+    "compile:development": "webpack",
+    "compile:production": "NODE_ENV=production npm run compile:development -- -p",
+    "compile:watch": "npm run compile:development -- --watch",
+    "lint": "eslint **/*.js"
+  },
+  "author": "Auth0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auth0/webtask-scripts.git"
+  },
+  "engines": {
+    "node": ">=4.0.0 <5.0.0",
+    "npm": ">=2.0.0 <3.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.2.33",
+    "lodash": "^4.2.1",
+    "mime": "^1.3.4",
+    "replacestream": "^4.0.0",
+    "s3-upload-stream": "^1.0.7",
+    "ssh2": "^0.4.13"
+  },
+  "devDependencies": {
+    "babel-core": "^6.4.5",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "eslint": "^2.4.0",
+    "eslint-config-auth0": "^1.0.0",
+    "json-loader": "^0.5.4",
+    "lodash": "^4.2.1",
+    "nodemon": "^1.8.1",
+    "sandboxjs": "^2.1.0",
+    "source-map-support": "^0.4.0",
+    "webpack": "^1.12.13"
+  }
+}
