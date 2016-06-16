@@ -101,8 +101,25 @@ return function (context, req, res) {
             }
         },
         function (callback) {
+            // Obtain added rules from GitHub
+            console.log('read added rules', { 
+                account: context.data.auth0_account, 
+                modified_rules: Object.getOwnPropertyNames(modified), 
+                removed_rules: Object.getOwnPropertyNames(removed),
+                added_rules: Object.getOwnPropertyNames(added)
+            });
+
+            var base_url = 'https://raw.githubusercontent.com/' 
+                + body.repository.full_name + '/' + (context.data.branch || 'master') +'/rules/';
+            async.eachSeries(
+                Object.getOwnPropertyNames(added),
+                createReader(base_url, added),
+                callback
+            );
+        },
+        function (callback) {
             // Obtain modified rules from GitHub
-            console.log({ 
+            console.log('read modified rules', { 
                 account: context.data.auth0_account, 
                 modified_rules: Object.getOwnPropertyNames(modified), 
                 removed_rules: Object.getOwnPropertyNames(removed),
@@ -113,21 +130,9 @@ return function (context, req, res) {
                 + body.repository.full_name + '/' + (context.data.branch || 'master') +'/rules/';
             async.eachSeries(
                 Object.getOwnPropertyNames(modified),
-                function (rule, callback) {
-                    rule = encodeURIComponent(rule);
-                    request({ 
-                        url: base_url + rule + '.js',
-                        method: 'GET',
-                        encoding: 'utf8'
-                    }, function (error, gres, body) {
-                        if (error) 
-                            return callback(error);
-                        if (gres.statusCode !== 200) 
-                            return callback(new Error('Error obtaining ' + base_url + rule + '.js. HTTP status ' + gres.statusCode));
-                        modified[rule] = body;
-                        return callback();
-                    })
-                }, callback);
+                createReader(base_url, modified),
+                callback
+            );
         },
         function (callback) {
             // Delete rules removed in GitHub from Auth0
@@ -166,7 +171,7 @@ return function (context, req, res) {
                         body: JSON.stringify({
                             name: decodeURIComponent(rule),
                             enabled: true,
-                            script: modified[rule]
+                            script: added[rule]
                         })
                     }, function (error, ares) {
                         if (error)
@@ -214,6 +219,7 @@ return function (context, req, res) {
                 res.writeHead(201);
                 res.end(JSON.stringify({ 
                     account: context.data.auth0_account, 
+                    added_rules: Object.getOwnPropertyNames(added), 
                     modified_rules: Object.getOwnPropertyNames(modified), 
                     removed_rules: Object.getOwnPropertyNames(removed)
                 }, null, 2));
@@ -224,3 +230,21 @@ return function (context, req, res) {
         }
     });
 };
+
+function createReader(base_url, bucket) {
+    return function (rule, callback) {
+        rule = encodeURIComponent(rule);
+        request({ 
+            url: base_url + rule + '.js',
+            method: 'GET',
+            encoding: 'utf8'
+        }, function (error, gres, body) {
+            if (error) 
+                return callback(error);
+            if (gres.statusCode !== 200) 
+                return callback(new Error('Error obtaining ' + base_url + rule + '.js. HTTP status ' + gres.statusCode));
+            bucket[rule] = body;
+            return callback();
+        });
+    };
+}
