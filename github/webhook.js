@@ -194,7 +194,7 @@ return function (context, req, res) {
                     
                     request({
                         url: base_url + rule,
-                        method: 'PUT',
+                        method: 'PATCH',
                         headers: {
                             Authorization: 'Bearer ' + context.data.auth0_token,
                             'Content-Type': 'application/json'
