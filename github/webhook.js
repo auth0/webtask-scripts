@@ -136,10 +136,19 @@ return function (context, req, res) {
         },
         function (callback) {
             // Delete rules removed in GitHub from Auth0
-            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/rules/';
+            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/v2/rules/';
             async.eachSeries(
                 Object.getOwnPropertyNames(removed),
                 function (rule, callback) {
+                    console.log('remove rule', { 
+                        account: context.data.auth0_account,
+                        base_url,
+                        rule,
+                        modified_rules: Object.getOwnPropertyNames(modified), 
+                        removed_rules: Object.getOwnPropertyNames(removed),
+                        added_rules: Object.getOwnPropertyNames(added)
+                    });
+                    
                     request({
                         url: base_url + rule + '/',
                         method: 'DELETE',
@@ -157,10 +166,19 @@ return function (context, req, res) {
         },
         function (callback) {
             // Add new rules
-            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/rules';
+            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/v2/rules';
             async.eachSeries(
                 Object.getOwnPropertyNames(added),
                 function (rule, callback) {
+                    console.log('add new rule', { 
+                        account: context.data.auth0_account,
+                        base_url,
+                        rule,
+                        modified_rules: Object.getOwnPropertyNames(modified), 
+                        removed_rules: Object.getOwnPropertyNames(removed),
+                        added_rules: Object.getOwnPropertyNames(added)
+                    });
+                    
                     request({
                         url: base_url,
                         method: 'POST',
@@ -184,10 +202,19 @@ return function (context, req, res) {
         },
         function (callback) {
             // Modify existing rules
-            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/rules/';
+            var base_url = 'https://' + context.data.auth0_account + '.auth0.com/api/v2/rules/';
             async.eachSeries(
                 Object.getOwnPropertyNames(modified),
                 function (rule, callback) {
+                    console.log('modify rule', { 
+                        account: context.data.auth0_account,
+                        base_url,
+                        rule,
+                        modified_rules: Object.getOwnPropertyNames(modified), 
+                        removed_rules: Object.getOwnPropertyNames(removed),
+                        added_rules: Object.getOwnPropertyNames(added)
+                    });
+                    
                     request({
                         url: base_url + rule,
                         method: 'PUT',
