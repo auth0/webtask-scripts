@@ -165,7 +165,7 @@ return function (context, req, res) {
                         },
                         body: JSON.stringify({
                             name: decodeURIComponent(rule),
-                            status: true,
+                            enabled: true,
                             script: modified[rule]
                         })
                     }, function (error, ares) {
@@ -191,7 +191,7 @@ return function (context, req, res) {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            status: true,
+                            enabled: true,
                             script: modified[rule]
                         })
                     }, function (error, ares) {
