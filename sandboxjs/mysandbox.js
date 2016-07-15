@@ -8,6 +8,13 @@
   4  set token variable to value
   5. execute on via cli> 'node mysandbox.js'
 
+  What you want to change:
+  1. mycode.js location or content
+  2. token
+  
+  What you don't want to change:
+  You don't NEED to change anything else for the sandbox to return the webtask response
+
 */
 var fs = require('fs');
 var Assert = require('assert');
@@ -22,7 +29,10 @@ if(!code){
   return;
 }
 
-var token = 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjIifQ.eyJqdGkiOiIwMThkYTU1NWNmMGQ0OWNjYmZiZDZhNGFiNmVlNDE4YiIsImlhdCI6MTQ2ODQyNjE3NCwiY2EiOlsiOTAwNzMzNGRiMDhjNGQ2M2E0MTNjZGFmM2YzYjYxNGMiXSwiZGQiOjEsInRlbiI6Ii9ed3QtZGluYWJlcnJ5LW91dGxvb2tfY29tLVswLTFdJC8ifQ.2DhK63o2NUQjPbpx4WV4bZwNLocXdYGMK9kZ1U9ajeY'
+// use webtask cli to generate token
+//var token = '--SAMPLE-TOKEN-ONLY--';
+var token = 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjIifQ.eyJqdGkiOiIwMThkYTU1NWNmMGQ0OWNjYmZiZDZhNGFiNmVlNDE4YiIsImlhdCI6MTQ2ODQyNjE3NCwiY2EiOlsiOTAwNzMzNGRiMDhjNGQ2M2E0MTNjZGFmM2YzYjYxNGMiXSwiZGQiOjEsInRlbiI6Ii9ed3QtZGluYWJlcnJ5LW91dGxvb2tfY29tLVswLTFdJC8ifQ.2DhK63o2NUQjPbpx4WV4bZwNLocXdYGMK9kZ1U9ajeY';
+
 var profile = Sandbox.fromToken(token);
 
 // This library lets you create a webtask and run it in one step as a shortcut
