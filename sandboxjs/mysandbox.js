@@ -30,8 +30,7 @@ if(!code){
 }
 
 // use webtask cli to generate token
-//var token = '--SAMPLE-TOKEN-ONLY--';
-var token = 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjIifQ.eyJqdGkiOiIwMThkYTU1NWNmMGQ0OWNjYmZiZDZhNGFiNmVlNDE4YiIsImlhdCI6MTQ2ODQyNjE3NCwiY2EiOlsiOTAwNzMzNGRiMDhjNGQ2M2E0MTNjZGFmM2YzYjYxNGMiXSwiZGQiOjEsInRlbiI6Ii9ed3QtZGluYWJlcnJ5LW91dGxvb2tfY29tLVswLTFdJC8ifQ.2DhK63o2NUQjPbpx4WV4bZwNLocXdYGMK9kZ1U9ajeY';
+var token = '--SAMPLE-TOKEN-ONLY--';
 
 var profile = Sandbox.fromToken(token);
 
