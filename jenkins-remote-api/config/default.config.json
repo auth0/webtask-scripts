@@ -1,0 +1,9 @@
+{
+  "params": {},
+  "secret": {
+    "JENKINS_USER": "",
+    "JENKINS_TOKEN": "",
+    "JENKINS_URL": "",
+    "JENKINS_PATH": ""
+  }
+}
