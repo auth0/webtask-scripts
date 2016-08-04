@@ -1,0 +1,41 @@
+{
+  "name": "sftp-list",
+  "version": "1.0.0",
+  "description": "Webtask to get a list of all files under a path on a SFTP server.",
+  "main": "dist/node.js",
+  "scripts": {
+    "start": "node tools/development",
+    "build": "webpack --config tools/webpack.config.js",
+    "build:production": "NODE_ENV=production npm run build",
+    "predeploy": "npm run build:production",
+    "deploy": "node tools/deploy",
+    "test": "npm run lint",
+    "lint": "eslint ."
+  },
+  "author": "Auth0 Inc. <support@auth0.com> (https://auth0.com)",
+  "license": "MIT",
+  "repository": "https://github.com/auth0/webtask-scripts/tree/master/sftp-list",
+  "engines": {
+    "node": ">=4.0.0 <5.0.0",
+    "npm": ">=2.0.0 <3.0.0"
+  },
+  "dependencies": {
+    "source-map-support": "^0.4.2",
+    "ssh2": "^0.4.13"
+  },
+  "devDependencies": {
+    "babel-core": "^6.11.4",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "eslint": "^2.13.1",
+    "eslint-config-auth0": "^2.0.0",
+    "json-loader": "^0.5.4",
+    "lodash": "^4.14.1",
+    "nodemon": "^1.10.0",
+    "sandboxjs": "^3.0.0",
+    "webpack": "^1.13.1",
+    "webpack-node-externals": "^1.3.3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "param": {
+    "path": ""
+  },
+  "secret": {
+    "host": "",
+    "port": "",
+    "username": "",
+    "password": ""
+  }
+}
