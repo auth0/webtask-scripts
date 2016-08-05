@@ -1,0 +1,14 @@
+{
+  "secret": {
+    "host": "",
+    "port": "",
+    "username": "",
+    "password": "",
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "bucket": ""
+  },
+  "param": {
+    "path": ""
+  }
+}
