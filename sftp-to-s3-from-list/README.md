@@ -27,11 +27,10 @@ Fill config files:
     "path": "<Path to replace with '' while uploading to S3>",
     "accessKeyId": "<AWS Access Key ID>",
     "secretAccessKey": "<AWS Secret Access Key>",
-    "bucket": "<AWS S3 Bucket>"
-  },
-  "param": {
+    "bucket": "<AWS S3 Bucket>",
     "path": "<path to replace when uploading to S3>"
-  }
+  },
+  "param": {}
 }
 ```
 `config/webtask.config.json`:

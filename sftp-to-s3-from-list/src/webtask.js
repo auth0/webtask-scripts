@@ -4,7 +4,7 @@ import mime from 'mime';
 import assert from 'assert';
 import express from 'express';
 import bodyParser from 'body-parser';
-import { isObject, isArray, isString } from 'lodash';
+import { isArray, isString } from 'lodash';
 import stream from 'stream';
 // import replacestream from 'replacestream';
 
@@ -56,7 +56,7 @@ async function sftpToS3FromList(req, res) {
   try {
     // Write in storage files list to upload or get remaining files from storage
     if (listFiles) {
-      files = { total: listFiles.files, remaining: listFiles.files };
+      files = { total: listFiles, remaining: listFiles };
       await storageSet(storage, files, { force: 1 });
     } else {
       files = await storageGet(storage);
@@ -107,7 +107,7 @@ async function sftpToS3FromList(req, res) {
 
 /**
  * Validate list of files received via POST x-www-form-urlencoded
- * e.g.: { files: ['/file.js', '/path/file.js'] }
+ * e.g.: ['/file.js', '/path/file.js']
  *
  * @param {string} listFiles - Data received via POST x-www-form-urlencoded
  */
@@ -121,10 +121,8 @@ function validateListFiles(listFiles) {
     return false;
   }
 
-  if (!isObject(parsedListFiles)) return false;
-  if (!parsedListFiles.files) return false;
-  if (!isArray(parsedListFiles.files)) return false;
-  if (!parsedListFiles.files.every(filePath => isString(filePath))) return false;
+  if (!isArray(parsedListFiles)) return false;
+  if (!parsedListFiles.every(filePath => isString(filePath))) return false;
 
   return true;
 }
