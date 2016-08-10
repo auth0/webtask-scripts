@@ -22,8 +22,9 @@ async function sftpToS3FromList(req, res) {
   const { webtaskContext, body } = req;
   const { data, storage } = webtaskContext;
   const { host, port, username, password, path, accessKeyId, secretAccessKey, bucket } = data;
-  const listFiles = validateListFiles(body['listFiles[]'])
-    ? JSON.parse(body['listFiles[]'])
+  const filesListPost = body.filesList;
+  const filesList = validateListFiles(filesListPost)
+    ? JSON.parse(filesListPost)
     : null;
 
   // Check required secrets and params
@@ -55,8 +56,8 @@ async function sftpToS3FromList(req, res) {
 
   try {
     // Write in storage files list to upload or get remaining files from storage
-    if (listFiles) {
-      files = { total: listFiles, remaining: listFiles };
+    if (filesList) {
+      files = { total: filesList, remaining: filesList };
       await storageSet(storage, files, { force: 1 });
     } else {
       files = await storageGet(storage);
@@ -75,29 +76,31 @@ async function sftpToS3FromList(req, res) {
     const sftpConnection = await connectSFTP(connection);
 
     // Main: SFTP to S3 from list
-    for (const filePath of files.remaining) {
-      /* eslint-disable no-console */
-      // Download file
-      const readStream = await downloadFile(sftpConnection, filePath);
-      console.log(`Successfully downloaded ${filePath} from SFTP`);
-      // Upload file
-      await uploadFile({ s3Client, path, filePath, readStream });
-      console.log(`Successfully uploaded ${filePath} to S3`);
-      // Remove file from storage.remaining
+    const sftpToS3 = files.remaining.map(filePath =>
+      handleFile({ path, s3Client, sftpConnection, filePath })
+    );
+
+    const filePaths = await Promise.all(sftpToS3);
+
+    // Remove files from storage.remaining
+    for (const filePath of filePaths) {
       const filesUpdated = Object.assign({}, files, {
         remaining: files.remaining.filter(item => item !== filePath)
       });
-      files = filesUpdated;
+      files = filesUpdated; // eslint-disable no-param-reassign
       await storageSet(storage, filesUpdated, { force: 1 });
-      // eslint-disable-line no-console
-      console.log(`Successfully removed ${filePath} from storage`);
+      console.log(`Successfully removed ${filePath} from storage`); // eslint-disable no-console
     }
 
     // End SSH2 and SFTP connections
     sftpConnection.end();
     connection.end();
 
-    return res.status(200).json({ files: filesCount(files) });
+    // Last validation check (maybe unnecessary :/)
+    const howMany = filesCount(files);
+    if (howMany.remaining !== 0) throw new Error(`Fails on ${howMany.remaining} files`);
+
+    return res.status(200).json({ files: howMany });
   } catch (e) {
     connection.end();
 
@@ -109,14 +112,14 @@ async function sftpToS3FromList(req, res) {
  * Validate list of files received via POST x-www-form-urlencoded
  * e.g.: ['/file.js', '/path/file.js']
  *
- * @param {string} listFiles - Data received via POST x-www-form-urlencoded
+ * @param {string} filesList - Data received via POST x-www-form-urlencoded
  */
-function validateListFiles(listFiles) {
+function validateListFiles(filesList) {
   let parsedListFiles = null;
 
-  if (!listFiles) return false;
+  if (!filesList) return false;
   try {
-    parsedListFiles = JSON.parse(listFiles);
+    parsedListFiles = JSON.parse(filesList);
   } catch (e) {
     return false;
   }
@@ -177,6 +180,33 @@ function connectSFTP(connection) {
 
       return resolve(sftp);
     });
+  });
+}
+
+/**
+ * Download and upload a file
+ *
+ * @param {object} options
+ * @param {object} options.path - Path to replace with '' when uploading to S3
+ * @param {object} options.s3Client - AWS S3 client instance
+ * @param {object} options.sftpConnection - npm:ssh2 SFTP connection
+ * @param {string} options.filePath - File path. E.g. '/folder/file.js'
+ */
+function handleFile({ path, s3Client, sftpConnection, filePath }) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      /* eslint-disable no-console */
+      // Download file
+      const readStream = await downloadFile(sftpConnection, filePath);
+      console.log(`Successfully downloaded ${filePath} from SFTP`);
+      // Upload file
+      await uploadFile({ s3Client, path, filePath, readStream });
+      console.log(`Successfully uploaded ${filePath} to S3`);
+
+      return resolve(filePath);
+    } catch (e) {
+      return reject(e);
+    }
   });
 }
 
