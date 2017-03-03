@@ -25,21 +25,14 @@ const defaultConfig = {
   },
 
   externals: [nodeExternals({
-    whitelist: ['s3-upload-stream', 'replacestream']
+    whitelist: ['replacestream']
   })],
 
   target: 'node',
 
   debug: true,
 
-  devtool: 'source-map',
-
-  plugins: [
-    new webpack.BannerPlugin('require("source-map-support").install();', {
-      raw: true,
-      entryOnly: false
-    })
-  ],
+  devtool: 'inline-source-map',
 
   stats: {
     colors: true

@@ -1,6 +1,6 @@
 import { assign, isFunction } from 'lodash';
 import express from 'express';
-import sftpToS3FromList from './webtask';
+import sftpToS3FromList from './main';
 import defaultConfig from '../config/default.config.json';
 
 const app = express();
