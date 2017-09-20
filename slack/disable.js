@@ -36,7 +36,7 @@ module.exports =
       }
 
       var token = context.data.SLACK_TOKEN;
-      var username = context.data.text;
+      var userId = context.data.text;
       var domain = context.data.SLACK_DOMAIN;
 
       if (context.data.channel_name === 'directmessage' ||
@@ -50,7 +50,7 @@ module.exports =
         }
 
         var matches = result.members.filter(function(mem){
-          return mem.name === username;
+          return mem.id === userId;
         });
 
         if (!matches.length){
