@@ -9,7 +9,7 @@
 //                        --secret SLACK_DOMAIN=yourdomain \
 //                        --secret SLACK_ALLOWED_CHANNEL_PREFIX=ext
 // Usage:
-//    /disable-guest username
+//    /disable-guest MemberID
 //
 // Credits to https://github.com/n4ch03 for the initial code
 //
